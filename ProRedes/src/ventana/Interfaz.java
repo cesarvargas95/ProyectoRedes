@@ -134,6 +134,11 @@ public class Interfaz extends javax.swing.JFrame {
         getContentPane().add(enviar, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 340, 70, 30));
 
         desconectarBot.setText("Desconectar");
+        desconectarBot.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                desconectarBotActionPerformed(evt);
+            }
+        });
         getContentPane().add(desconectarBot, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 70, 100, -1));
 
         conectarBot.setText("Conectar");
@@ -163,7 +168,7 @@ public class Interfaz extends javax.swing.JFrame {
         if(evt.getKeyCode()==10){
             //System.out.println(entrada.getText());
             if(entrada.getText()!=entradatext){
-            em.enviarMsj(entrada.getText());
+            em.enviarMsj(NombreEntrada.getText()+": "+entrada.getText());
             entrada.setText(entradatext);
             }
         }
@@ -192,10 +197,15 @@ public class Interfaz extends javax.swing.JFrame {
     private void enviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enviarActionPerformed
         // TODO add your handling code here:
         if(entrada.getText()!= entradatext){
-            em.enviarMsj(entrada.getText());
+            em.enviarMsj(NombreEntrada.getText()+": "+entrada.getText());
             entrada.setText(entradatext);
             }
     }//GEN-LAST:event_enviarActionPerformed
+
+    private void desconectarBotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_desconectarBotActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_desconectarBotActionPerformed
 
     
     public void recibirMsj(String msj){

@@ -5,6 +5,9 @@
  */
 package servidorchat;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 
@@ -36,6 +39,8 @@ public class Servidor extends javax.swing.JFrame {
     private void initComponents() {
 
         encender = new javax.swing.JButton();
+        puerto = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
         apagar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
@@ -50,7 +55,16 @@ public class Servidor extends javax.swing.JFrame {
                 encenderActionPerformed(evt);
             }
         });
-        getContentPane().add(encender, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 20, 90, 30));
+        getContentPane().add(encender, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 90, 30));
+
+        puerto.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        puerto.setText("6000");
+        getContentPane().add(puerto, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 20, 90, 30));
+
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("Puerto");
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 90, 20));
 
         apagar.setText("Apagar");
         apagar.addActionListener(new java.awt.event.ActionListener() {
@@ -58,10 +72,10 @@ public class Servidor extends javax.swing.JFrame {
                 apagarActionPerformed(evt);
             }
         });
-        getContentPane().add(apagar, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 60, 90, 30));
+        getContentPane().add(apagar, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 70, 90, 30));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imag/dota.jpg"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(2, 1, 210, 100));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 280, 160));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -70,8 +84,12 @@ public class Servidor extends javax.swing.JFrame {
         // TODO add your handling code here:
         JOptionPane.showMessageDialog(this, "El servidor esta escuchando");
         if(c==null){
-           c = new Conexion(this); 
+           try{
+           c = new Conexion(this,Integer.parseInt(puerto.getText())); 
            c.start();
+           }catch(Exception e){
+               
+           }
        }
     }//GEN-LAST:event_encenderActionPerformed
 
@@ -79,9 +97,9 @@ public class Servidor extends javax.swing.JFrame {
         // TODO add your handling code here:
        // c.cerrarPuerto();
        
-       c=null;
+      
        JOptionPane.showMessageDialog(this,"El servidor no esta escuchando");
-        
+        System.exit(0);
     }//GEN-LAST:event_apagarActionPerformed
 
     /**
@@ -123,5 +141,7 @@ public class Servidor extends javax.swing.JFrame {
     private javax.swing.JButton apagar;
     private javax.swing.JButton encender;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JTextField puerto;
     // End of variables declaration//GEN-END:variables
 }

@@ -20,11 +20,13 @@ public class Conexion extends Thread{
    ServerSocket ss;
     Component c; 
     Semaphore guardia;
-    Boolean a;// si el puerto esta abierto esta en true
-   public Conexion(Component c){
+    boolean a;// si el puerto esta abierto esta en true
+    int puerto;
+   public Conexion(Component c,int puerto){
        this.c= c;
        a= false;
        guardia = new Semaphore(1, true);
+       this.puerto= puerto;
    }
    public void abrirPuerto(){
        ss=null;
@@ -32,7 +34,7 @@ public class Conexion extends Thread{
         try{
             guardia.acquire();
             a= true;
-            ss = new ServerSocket(6000);
+            ss = new ServerSocket(puerto);
             guardia.release();
             while(true){
                  Socket s= ss.accept();
