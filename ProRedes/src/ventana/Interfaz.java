@@ -7,6 +7,8 @@ package ventana;
 
 import java.awt.Image;
 import java.net.Socket;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
@@ -22,6 +24,10 @@ public class Interfaz extends javax.swing.JFrame {
     Socket s;
     EnviarMsj em;
     String entradatext;
+    Cifrado cifrado;
+    Boolean pKey = false;
+    PublicKey publicKey;
+    PrivateKey privateKey;
     public Interfaz() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -180,6 +186,10 @@ public class Interfaz extends javax.swing.JFrame {
         // TODO add your handling code here:
         em=null;
         if(em==null){
+            if(cifrado == null)
+            {
+                cifrado = new Cifrado();
+            }
             em= new EnviarMsj(IpEntrada.getText(), Integer.parseInt(puertoEntrada.getText()),this);
             em.start();   
         }
@@ -196,7 +206,16 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void enviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enviarActionPerformed
         // TODO add your handling code here:
-        if(entrada.getText()!= entradatext){
+        if(pKey == false)
+        {
+            if(cifrado.clavePublica != null){
+            JOptionPane.showMessageDialog(null, "Voy a enviar llave");
+
+            em.enviarLlave(cifrado.clavePublica);
+            }
+            
+        }
+        else if(entrada.getText()!= entradatext){
             em.enviarMsj(NombreEntrada.getText()+": "+entrada.getText());
             entrada.setText(entradatext);
             }
@@ -209,7 +228,15 @@ public class Interfaz extends javax.swing.JFrame {
 
     
     public void recibirMsj(String msj){
-        chat.append(msj+ "\n");
+        String aux = cifrado.Descifrar(msj);
+        chat.append(aux+ "\n");
+        
+    }
+    
+    public void recibirKey(PublicKey llavePublica){
+        this.publicKey = llavePublica;
+        pKey = true;
+        JOptionPane.showMessageDialog(null, "Recibi llave");
         
     }
     /**
