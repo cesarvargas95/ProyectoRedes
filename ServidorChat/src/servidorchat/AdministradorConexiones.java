@@ -20,9 +20,9 @@ public class AdministradorConexiones {
     
     private ArrayList<MsAdmin> conexiones = new ArrayList();
     
-    public void enviarMsj(String msj){
+    public void enviarMsj(byte[] msj, int len){
         for(MsAdmin ms: conexiones){
-            ms.enviarMsj(msj);
+            ms.enviarMsj(msj,len);
         }
         
     }

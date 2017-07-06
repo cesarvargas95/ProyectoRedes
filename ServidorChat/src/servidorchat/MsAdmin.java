@@ -33,21 +33,26 @@ public class MsAdmin extends Thread {
        }catch(Exception e){
        }
     }
-    public void enviarMsj(String msj){
+    public void enviarMsj(byte[] msj,int len){
         try{
-            dos.writeUTF(msj);
+            dos.writeInt(len);
+            dos.write(msj,0,len);
         }catch(Exception e){
+            System.out.println("error en enviar de msAd");
         }
         
     }
     public void run(){
         while (true){
             try {
-                String msj = dis.readUTF();
-                AdministradorConexiones.getInstance().enviarMsj(msj);
+                int len =dis.readInt();
+                byte[] msj = new byte[len];
+                dis.readFully(msj,0,len);
+                System.out.println("estoy en enviar MSadm: " + new String(msj));
+                AdministradorConexiones.getInstance().enviarMsj(msj,len);
             } catch (Exception e) {
             }
-           
+           System.out.println("estoy en env");
             
         }
         

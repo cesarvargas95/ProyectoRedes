@@ -35,13 +35,15 @@ public class EnviarMsj extends Thread{
     }
 
     
-    public void enviarMsj(String msj){
+    public void enviarMsj(byte[] msj){
     
         try{
             DataOutputStream d = new DataOutputStream(s.getOutputStream());
-            String aux = ventana.cifrado.Cifrar(msj, ventana.publicKey);
-            d.writeUTF(aux);
-            
+            d.writeInt(msj.length);
+            d.write(msj);
+            //String aux = ventana.cifrado.Cifrar(msj, ventana.publicKey);
+            //sd.writeUTF(aux);
+            System.out.println("estoy en enviar msj: " + new String(msj));
         }catch(Exception e){
             JOptionPane.showMessageDialog(ventana, "No se puedo enviar el msj");
         } 
@@ -52,8 +54,8 @@ public class EnviarMsj extends Thread{
         ObjectOutputStream d = new ObjectOutputStream (s.getOutputStream());
         d.writeObject(llavePublica);
         d.flush();
-        } catch (Exception e){
-            System.out.println(e.toString());
+          } catch (Exception e){
+           System.out.println(e.toString());
             JOptionPane.showMessageDialog(ventana, "No se puedo enviar la llave");
         }
     }
@@ -63,17 +65,20 @@ public class EnviarMsj extends Thread{
             s= new Socket(ip, puerto);
             System.out.println("conectado");
             DataInputStream dis = new DataInputStream(s.getInputStream());
-            ObjectInputStream pK = new ObjectInputStream(s.getInputStream());
+          //  ObjectInputStream pK = new ObjectInputStream(s.getInputStream());
             while(true){
-                String msj = dis.readUTF();
-                Object obj = pK.readObject();
-                PublicKey otherPublicKey = (PublicKey) obj;
-                ventana.recibirKey(otherPublicKey);
+                int len =dis.readInt();
+                byte[] msj = new byte[len];
+                dis.readFully(msj,0,len);
+                        
+                //Object obj = pK.readObject();
+               // PublicKey otherPublicKey = (PublicKey) obj;
+               // ventana.recibirKey(otherPublicKey);
                 ventana.recibirMsj(msj);
                 
             }
         }catch(Exception e){
-            System.out.println(e.toString());
+           // System.out.println(e.toString());
             JOptionPane.showMessageDialog(ventana, "Error al conectar");
         } 
     } 

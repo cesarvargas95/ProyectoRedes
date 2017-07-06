@@ -6,7 +6,9 @@
 package ventana;
 
 import java.awt.Image;
+import java.math.BigInteger;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import javax.swing.ImageIcon;
@@ -24,10 +26,11 @@ public class Interfaz extends javax.swing.JFrame {
     Socket s;
     EnviarMsj em;
     String entradatext;
-    Cifrado cifrado;
+    //Cifrado cifrado;
     Boolean pKey = false;
     PublicKey publicKey;
     PrivateKey privateKey;
+    RSA rsa;
     public Interfaz() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -35,6 +38,10 @@ public class Interfaz extends javax.swing.JFrame {
         ImageIcon icono = new ImageIcon(image.getImage().getScaledInstance(477,426,Image.SCALE_DEFAULT));
         never.setIcon(icono);
         entradatext= entrada.getText();
+        rsa= new RSA(new BigInteger("13086071780231689389281582130505724206171493340370421401756073105563342532676514221535928493686214327650784635425662439549468739263898434994166247814495971"),
+                    new BigInteger("6975307335673450650551260136096376813678535418880548403912435920585367249561754214501082289221804523325965926732889759519672082983951923010853558243235290409492775815309070079274042003680465449971851435955876127219540183904365338202255068607445000410662908458840816895422873819771766412103424264208689914578464154108404338263159487768488609339116507484736839312411322316413382394212172420287166895311718206453682088184894124108675997148165652970885277381530462636382688750732759733946359921104232202847641955581088438796843672078299937807247224079470675465553599847642906687793770872004418999749675084223402412560619"),
+                            new BigInteger("18065789795781398642379227077624043218450889348509554652295707693652109235579503483252061241830894398594106674952693589953285988275009936032277180043875634048612263430916840939465314844726045904207175536273782239728071513689165460343815318291545984462141091746074434125647941945002164393538026028939500551981902388688946831735054253690748490387138282100068302214236890876046962316120072816906062370907868914786249863757294738556802578062275655654548189955227799296771662355676422199280336042493477325777802050392880297987169330236547832163755427847159051245548482812759732226374072375020159981560177488610382913605003"));
+        //rsa= new RSA();
     }
 
     /**
@@ -174,10 +181,23 @@ public class Interfaz extends javax.swing.JFrame {
         if(evt.getKeyCode()==10){
             //System.out.println(entrada.getText());
             if(entrada.getText()!=entradatext){
-            em.enviarMsj(NombreEntrada.getText()+": "+entrada.getText());
+            String s= NombreEntrada.getText()+": "+entrada.getText();
+            System.out.println(s);
+            System.out.println("String in Bytes: "+ rsa.bytesToString(s.getBytes()));
+            byte[] encrypted = rsa.encrypt(s.getBytes());
+            
+            //String s2= new String(encrypted);
+            
+            //byte[] decrypted = rsa.decrypt(s2.getBytes());
+           // String str = new String(rsa.encrypt(s.getBytes()));
+           // System.out.println("Decrypting Bytes: " + rsa.bytesToString(decrypted));
+           // System.out.println("Decrypted String: " + new String(decrypted)); 
+            
+            em.enviarMsj(encrypted);
             entrada.setText(entradatext);
             }
         }
+        
         
        // System.out.println(evt.getKeyCode());
     }//GEN-LAST:event_entradaKeyPressed
@@ -186,10 +206,10 @@ public class Interfaz extends javax.swing.JFrame {
         // TODO add your handling code here:
         em=null;
         if(em==null){
-            if(cifrado == null)
-            {
-                cifrado = new Cifrado();
-            }
+           // if(cifrado == null)
+            //{
+           //     cifrado = new Cifrado();
+            //}
             em= new EnviarMsj(IpEntrada.getText(), Integer.parseInt(puertoEntrada.getText()),this);
             em.start();   
         }
@@ -206,19 +226,21 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void enviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enviarActionPerformed
         // TODO add your handling code here:
-        if(pKey == false)
-        {
-            if(cifrado.clavePublica != null){
-            JOptionPane.showMessageDialog(null, "Voy a enviar llave");
+       // if(pKey == false)
+       // {
+        //    if(cifrado.clavePublica != null){
+        //    JOptionPane.showMessageDialog(null, "Voy a enviar llave");
 
-            em.enviarLlave(cifrado.clavePublica);
-            }
+        //    em.enviarLlave(cifrado.clavePublica);
+        //    }
             
-        }
-        else if(entrada.getText()!= entradatext){
-            em.enviarMsj(NombreEntrada.getText()+": "+entrada.getText());
+      //  }
+       // else if(entrada.getText()!= entradatext){
+            String s= NombreEntrada.getText()+": "+entrada.getText();
+            String str = new String(rsa.encrypt(s.getBytes()));
+            //em.enviarMsj(str);
             entrada.setText(entradatext);
-            }
+        //    }
     }//GEN-LAST:event_enviarActionPerformed
 
     private void desconectarBotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_desconectarBotActionPerformed
@@ -227,10 +249,17 @@ public class Interfaz extends javax.swing.JFrame {
     }//GEN-LAST:event_desconectarBotActionPerformed
 
     
-    public void recibirMsj(String msj){
-        String aux = cifrado.Descifrar(msj);
-        chat.append(aux+ "\n");
+    public void recibirMsj(byte[] msj){
+        //String aux = cifrado.Descifrar(msj);
+        //chat.append(aux+ "\n");
         
+        chat.append(new String(msj)+ "\n");
+        // decrypt
+        byte[] decrypted = rsa.decrypt(msj);
+        String s1 =  new String(decrypted);
+        System.out.println("Decrypted String: " +s1);
+        //msj = new String(decrypted, StandardCharsets.UTF_8);
+        chat.append(s1+ "\n");
     }
     
     public void recibirKey(PublicKey llavePublica){
