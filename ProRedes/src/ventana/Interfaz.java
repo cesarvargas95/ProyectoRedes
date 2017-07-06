@@ -225,22 +225,20 @@ public class Interfaz extends javax.swing.JFrame {
     }//GEN-LAST:event_NombreEntradaActionPerformed
 
     private void enviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enviarActionPerformed
-        // TODO add your handling code here:
-       // if(pKey == false)
-       // {
-        //    if(cifrado.clavePublica != null){
-        //    JOptionPane.showMessageDialog(null, "Voy a enviar llave");
-
-        //    em.enviarLlave(cifrado.clavePublica);
-        //    }
+        String s= NombreEntrada.getText()+": "+entrada.getText();
+            System.out.println(s);
+            System.out.println("String in Bytes: "+ rsa.bytesToString(s.getBytes()));
+            byte[] encrypted = rsa.encrypt(s.getBytes());
             
-      //  }
-       // else if(entrada.getText()!= entradatext){
-            String s= NombreEntrada.getText()+": "+entrada.getText();
-            String str = new String(rsa.encrypt(s.getBytes()));
-            //em.enviarMsj(str);
+            //String s2= new String(encrypted);
+            
+            //byte[] decrypted = rsa.decrypt(s2.getBytes());
+           // String str = new String(rsa.encrypt(s.getBytes()));
+           // System.out.println("Decrypting Bytes: " + rsa.bytesToString(decrypted));
+           // System.out.println("Decrypted String: " + new String(decrypted)); 
+            
+            em.enviarMsj(encrypted);
             entrada.setText(entradatext);
-        //    }
     }//GEN-LAST:event_enviarActionPerformed
 
     private void desconectarBotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_desconectarBotActionPerformed
